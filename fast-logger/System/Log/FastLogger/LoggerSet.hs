@@ -24,7 +24,6 @@ module System.Log.FastLogger.LoggerSet (
   , replaceLoggerSet
   ) where
 
-import Control.Concurrent (getNumCapabilities)
 import Control.Debounce (mkDebounce, defaultDebounceSettings, debounceAction)
 
 import System.Log.FastLogger.FileIO
@@ -99,7 +98,7 @@ newFDLoggerSet :: BufSize -> Maybe Int -> Maybe FilePath -> FD -> IO LoggerSet
 newFDLoggerSet size mn mfile fd = do
     n <- case mn of
       Just n' -> return n'
-      Nothing -> getNumCapabilities
+      Nothing -> return 1
     fdref <- newIORef fd
     let bufsiz = max 1 size
     logger <- if n == 1 && mn == Just 1 then
