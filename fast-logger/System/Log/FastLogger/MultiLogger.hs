@@ -14,6 +14,7 @@ import System.Log.FastLogger.IO
 import System.Log.FastLogger.Imports
 import System.Log.FastLogger.LogStr
 import System.Log.FastLogger.Write
+import Debug.Trace
 
 ----------------------------------------------------------------
 
@@ -42,7 +43,7 @@ newMLogger = MLogger <$> newIORef mempty
 -- | Creating `MultiLogger`.
 --   The first argument is the number of the internal builders.
 newMultiLogger :: Int -> BufSize -> IORef FD -> IO MultiLogger
-newMultiLogger n bufsize fdref= do
+newMultiLogger n bufsize fdref= trace "Made multi logger" $ do
     mbuf <- getBuffer bufsize >>= newMVar
     arr <- listArray (0,n-1) <$> replicateM n newMLogger
     return $ MultiLogger {
