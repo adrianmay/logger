@@ -13,6 +13,7 @@ import System.Log.FastLogger.IO
 import System.Log.FastLogger.Imports
 import System.Log.FastLogger.LogStr
 import System.Log.FastLogger.Write
+import Debug.Trace
 
 ----------------------------------------------------------------
 
@@ -58,7 +59,7 @@ writer bufsize buf fdref tvar ref mvar = loop (0 :: Int)
 
 -- | Creating `SingleLogger`.
 newSingleLogger :: BufSize -> IORef FD -> IO SingleLogger
-newSingleLogger bufsize fdref = do
+newSingleLogger bufsize fdref = trace "Made single logger" $ do
     tvar <- newTVarIO 0
     ref <- newIORef (mempty,[])
     mvar <- newEmptyMVar
