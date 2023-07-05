@@ -31,7 +31,7 @@ import System.Log.FastLogger.IO
 import System.Log.FastLogger.Imports
 import System.Log.FastLogger.LogStr
 import System.Log.FastLogger.MultiLogger (MultiLogger)
-import qualified System.Log.FastLogger.MultiLogger as M
+-- import qualified System.Log.FastLogger.MultiLogger as M
 import System.Log.FastLogger.SingleLogger (SingleLogger)
 import qualified System.Log.FastLogger.SingleLogger as S
 import System.Log.FastLogger.Write
@@ -95,16 +95,10 @@ newLoggerSet size mn = maybe (newStdoutLoggerSet size) (newFileLoggerSetN size m
 
 -- | Creating a new 'LoggerSet' using a FD.
 newFDLoggerSet :: BufSize -> Maybe Int -> Maybe FilePath -> FD -> IO LoggerSet
-newFDLoggerSet size mn mfile fd = do
-    n <- case mn of
-      Just n' -> return n'
-      Nothing -> return 1
+newFDLoggerSet size _mn mfile fd = do
     fdref <- newIORef fd
     let bufsiz = max 1 size
-    logger <- if n == 1 && mn == Just 1 then
-                  SL <$> S.newSingleLogger bufsiz fdref
-                else do
-                  ML <$> M.newMultiLogger n bufsiz fdref
+    logger <- SL <$> S.newSingleLogger bufsiz fdref
     flush <- mkDebounce defaultDebounceSettings
         { debounceAction = flushLogStrRaw logger
         }
